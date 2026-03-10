@@ -12,8 +12,9 @@ export const metadata = {
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: { success?: string };
+  searchParams: Promise<{ success?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -56,7 +57,7 @@ export default async function OrdersPage({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Banner Success if just purchased */}
-        {searchParams?.success === "true" && (
+        {resolvedSearchParams?.success === "true" && (
           <div className="mb-8 p-4 bg-[#22C55E]/10 border border-[#22C55E]/20 rounded-2xl flex items-center gap-4">
             <div className="p-2 bg-[#22C55E]/20 rounded-full">
               <CheckCircle2 className="w-6 h-6 text-[#22C55E]" />

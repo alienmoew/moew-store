@@ -9,19 +9,20 @@ export const metadata = {
 };
 
 interface GamesPageProps {
-  searchParams: {
+  searchParams: Promise<{
     search?: string;
     category?: string;
     sort?: string;
     page?: string;
-  };
+  }>;
 }
 
-export default function GamesPage({ searchParams }: GamesPageProps) {
-  const search = searchParams.search;
-  const category = searchParams.category;
-  const sort = searchParams.sort;
-  const page = Number(searchParams.page) || 1;
+export default async function GamesPage({ searchParams }: GamesPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const search = resolvedSearchParams.search;
+  const category = resolvedSearchParams.category;
+  const sort = resolvedSearchParams.sort;
+  const page = Number(resolvedSearchParams.page) || 1;
 
   // Key để force re-render Suspense khi params thay đổi
   const key = `${search}-${category}-${sort}-${page}`;
