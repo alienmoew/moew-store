@@ -30,7 +30,7 @@ const navLinks = [
   { href: "/categories", label: "Danh mục" },
 ];
 
-export default function Navbar({ user }: { user: any }) {
+export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?: number }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -97,9 +97,11 @@ export default function Navbar({ user }: { user: any }) {
               className="relative text-[#A1A1AA] hover:text-white hover:bg-white/5"
             >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-[#8B5CF6] text-[10px] font-bold text-white flex items-center justify-center">
-                0
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#EF4444] text-[10px] font-bold text-white flex items-center justify-center border border-[#0B0B0F]">
+                  {cartCount}
+                </span>
+              )}
             </Button>
           </Link>
 

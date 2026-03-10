@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   keywords: ["game store", "digital games", "gaming", "moew store"],
 };
 
+import { getCart } from "@/app/cart/actions";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -28,10 +30,18 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  let cartCount = 0;
+  if (user) {
+    const { cartItems } = await getCart();
+    if (cartItems) {
+      cartCount = cartItems.length;
+    }
+  }
+
   return (
     <html lang="vi">
       <body className={`${inter.variable} antialiased`}>
-        <Navbar user={user} />
+        <Navbar user={user} cartCount={cartCount} />
         <main className="min-h-[calc(100vh-4rem)]">{children}</main>
         <Footer />
       </body>

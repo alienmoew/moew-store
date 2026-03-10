@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Calendar, ShieldCheck, Gamepad2, Heart } from "lucide-react";
 import Image from "next/image";
+import { AddToCartButton } from "@/components/games/AddToCartButton";
 
 interface GameDetailPageProps {
   params: Promise<{
@@ -142,12 +143,7 @@ export default async function GameDetailPage({ params }: GameDetailPageProps) {
                   <Heart className="w-6 h-6" />
                 </Button>
 
-                <Button 
-                  className="h-14 flex-1 sm:w-64 rounded-xl bg-[#8B5CF6] hover:bg-[#A78BFA] text-white font-bold text-lg transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(139,92,246,0.2)]"
-                >
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Thêm vào giỏ
-                </Button>
+                <AddToCartButton gameId={game.id} />
               </div>
             </div>
           </div>
