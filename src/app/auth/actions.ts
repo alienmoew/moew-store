@@ -36,7 +36,7 @@ export async function loginWithGoogle() {
   }
 
   if (data.url) {
-    redirect(data.url);
+    return { url: data.url };
   }
 }
 
