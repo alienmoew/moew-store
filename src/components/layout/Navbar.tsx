@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   ShoppingCart,
@@ -11,6 +11,8 @@ import {
   LogOut,
   Package,
   Crown,
+  X,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,25 +35,44 @@ const navLinks = [
 export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?: number }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0B0B0F]/90 backdrop-blur-2xl supports-[backdrop-filter]:bg-[#0B0B0F]/80">
-      {/* Subtle gradient line at top */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#8B5CF6]/50 to-transparent" />
-      
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+        isScrolled
+          ? "bg-[#0B0B0F]/95 backdrop-blur-2xl border-b border-white/5 shadow-lg shadow-black/20"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      {/* Top gradient line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#8B5CF6]/60 to-transparent" />
+
+      <div className="mx-auto flex h-16 md:h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-3 group">
           <div className="relative">
-            <div className="absolute inset-0 bg-[#8B5CF6]/30 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-            <Crown className="relative h-8 w-8 text-[#A78BFA] transition-all duration-300 group-hover:scale-110 group-hover:-rotate-6 drop-shadow-[0_0_15px_rgba(167,139,250,0.6)] animate-pulse-slow" />
+            <div className="absolute inset-0 bg-[#8B5CF6]/40 blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+            <Crown className="relative h-8 w-8 text-gradient-luxury transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 drop-shadow-[0_0_15px_rgba(167,139,250,0.6)]" />
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-[#A78BFA] to-[#C4B5FD] bg-clip-text text-transparent group-hover:from-white group-hover:to-[#A78BFA] transition-all duration-300">
-            Moew Store
+          <span className="text-xl md:text-2xl font-bold tracking-tight">
+            <span className="bg-gradient-to-r from-white via-[#A78BFA] to-white bg-clip-text text-transparent group-hover:bg-gradient-to-r group-hover:from-[#8B5CF6] group-hover:via-[#A78BFA] group-hover:to-[#8B5CF6] bg-[length:200%_auto] animate-[gradient-shift_3s_ease_infinite] transition-all duration-300">
+              Moew Store
+            </span>
           </span>
         </Link>
 
@@ -61,35 +82,37 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
             <Link
               key={link.href}
               href={link.href}
-              className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+              className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                 pathname === link.href
-                  ? "text-white bg-[#8B5CF6]/20 text-[#C4B5FD]"
+                  ? "text-white bg-gradient-to-r from-[#8B5CF6]/20 to-[#6366F1]/20 border border-[#8B5CF6]/30"
                   : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
               }`}
             >
               {link.label}
               {/* Animated underline */}
-              <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#8B5CF6] rounded-full transition-all duration-300 ${
-                pathname === link.href ? "w-6" : "group-hover:w-4"
-              }`} />
+              <span
+                className={`absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-[#8B5CF6] to-[#A78BFA] rounded-full transition-all duration-300 ${
+                  pathname === link.href ? "w-8" : "w-0 group-hover:w-6"
+                }`}
+              />
             </Link>
           ))}
         </nav>
 
         {/* Search Bar - Desktop */}
         <div className="hidden lg:flex items-center relative max-w-xs flex-1 mx-6 group">
-          <Search className="absolute left-3 h-4 w-4 text-zinc-500 transition-all duration-300 group-focus-within:scale-125 group-focus-within:text-[#8B5CF6]" />
+          <Search className="absolute left-4 h-4 w-4 text-zinc-500 transition-all duration-300 group-focus-within:scale-125 group-focus-within:text-[#8B5CF6]" />
           <Input
             type="text"
             placeholder="Tìm kiếm game..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 bg-white/5 border-white/10 text-white placeholder:text-zinc-500 focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]/30 focus:ring-offset-0 focus:ring-offset-[#0B0B0F] h-9 rounded-full transition-all duration-300 hover:bg-white/[0.07] hover:border-white/20"
+            className="pl-11 pr-4 bg-white/5 border-white/10 text-white placeholder:text-zinc-500 focus:border-[#8B5CF6] focus:ring-2 focus:ring-[#8B5CF6]/20 focus:ring-offset-0 focus:ring-offset-[#0B0B0F] h-10 rounded-xl transition-all duration-300 hover:bg-white/[0.07] hover:border-white/20 shadow-sm"
           />
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {/* Search icon - Mobile */}
           <Button
             variant="ghost"
@@ -99,16 +122,16 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
             <Search className="h-5 w-5" />
           </Button>
 
-          {/* Cart */}
-          <Link href="/cart">
+          {/* Cart with enhanced styling */}
+          <Link href="/cart" className="relative">
             <Button
               variant="ghost"
               size="icon"
-              className="relative text-zinc-400 hover:text-white hover:bg-white/10"
+              className="relative text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-300"
             >
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-gradient-to-br from-[#EF4444] to-[#DC2626] text-[10px] font-bold text-white flex items-center justify-center shadow-lg shadow-[#EF4444]/30">
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-[10px] font-bold text-white flex items-center justify-center shadow-lg shadow-[#8B5CF6]/40 animate-pulse">
                   {cartCount}
                 </span>
               )}
@@ -122,7 +145,7 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hidden sm:flex text-zinc-400 hover:text-white hover:bg-white/10"
+                  className="hidden sm:flex text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-300"
                 />
               }
             >
@@ -130,11 +153,12 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-52 bg-[#111118]/95 backdrop-blur-xl border-white/10"
+              className="w-56 glass-premium border border-[#8B5CF6]/20"
             >
               {user ? (
                 <>
-                  <div className="px-2 py-1.5 text-sm text-white truncate border-b border-white/10 mb-1">
+                  <div className="px-3 py-3 text-sm text-white truncate border-b border-white/10 mb-1 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#8B5CF6]" />
                     {user.email}
                   </div>
                   <DropdownMenuItem
@@ -152,7 +176,7 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
                     Lịch sử đơn hàng
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={handleLogout}
                     className="cursor-pointer text-[#EF4444] hover:text-[#EF4444] focus:text-[#EF4444]"
                   >
@@ -182,7 +206,7 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
           </DropdownMenu>
 
           {/* Mobile Menu */}
-          <Sheet>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger
               render={
                 <Button
@@ -196,110 +220,112 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-72 bg-[#111118] border-l border-white/5 p-0"
+              className="w-80 bg-[#0B0B0F] border-l border-white/5 p-0 overflow-hidden"
               showCloseButton={false}
             >
-              <div className="flex flex-col h-full">
-                {/* Mobile Header */}
-                <div className="flex items-center justify-between p-4 border-b border-white/5">
-                  <Link href="/" className="flex items-center gap-2">
-                    <Crown className="h-6 w-6 text-[#A78BFA]" />
-                    <span className="text-lg font-bold bg-gradient-to-r from-[#A78BFA] to-[#C4B5FD] bg-clip-text text-transparent">
-                      Moew Store
-                    </span>
+              {/* Mobile Menu Header with gradient */}
+              <div className="relative px-6 py-6 bg-gradient-to-br from-[#8B5CF6]/10 to-transparent">
+                <div className="absolute inset-0 aurora-bg opacity-30" />
+                <div className="relative flex flex-col items-start space-y-4">
+                  <Link href="/" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
+                    <Crown className="h-8 w-8 text-gradient-luxury" />
+                    <span className="text-xl font-bold text-white">Moew Store</span>
                   </Link>
                 </div>
+              </div>
 
-                {/* Mobile Search */}
-                <div className="p-4">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                    <Input
-                      type="text"
-                      placeholder="Tìm kiếm game..."
-                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-zinc-500"
-                    />
-                  </div>
+              {/* Mobile Search */}
+              <div className="p-4 border-b border-white/5">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                  <Input
+                    type="text"
+                    placeholder="Tìm kiếm game..."
+                    className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-zinc-500 rounded-xl"
+                  />
                 </div>
+              </div>
 
-                {/* Mobile Nav Links */}
-                <nav className="flex flex-col px-2">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                        pathname === link.href
-                          ? "text-[#C4B5FD] bg-[#8B5CF6]/15"
-                          : "text-zinc-400 hover:text-white hover:bg-white/5"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+              {/* Mobile Nav Links */}
+              <nav className="flex flex-col px-4 py-2">
+                {navLinks.map((link) => (
                   <Link
-                    href="/cart"
-                    className="px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`px-4 py-4 rounded-xl text-base font-medium transition-colors ${
+                      pathname === link.href
+                        ? "text-white bg-gradient-to-r from-[#8B5CF6]/20 to-[#6366F1]/10 border border-[#8B5CF6]/30"
+                        : "text-zinc-400 hover:text-white hover:bg-white/5"
+                    }`}
                   >
-                    <ShoppingCart className="h-4 w-4" />
-                    Giỏ hàng
+                    {link.label}
                   </Link>
-                </nav>
-
-                {/* Mobile Auth */}
-                <div className="mt-auto p-4 border-t border-white/5 space-y-2">
-                  {user ? (
-                    <>
-                      <div className="px-2 pb-2 mb-2 text-sm text-zinc-500 border-b border-white/5 truncate">
-                        Đang đăng nhập: {user.email}
-                      </div>
-                      <Link href="/profile" className="block w-full">
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start text-zinc-400 hover:text-white hover:bg-white/5"
-                        >
-                          <UserIcon className="h-4 w-4 mr-2" /> Tài khoản cá nhân
-                        </Button>
-                      </Link>
-                      <Link href="/orders" className="block w-full">
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start text-zinc-400 hover:text-white hover:bg-white/5"
-                        >
-                          <Package className="h-4 w-4 mr-2" /> Lịch sử đơn hàng
-                        </Button>
-                      </Link>
-                      <Button
-                        onClick={handleLogout}
-                        variant="ghost"
-                        className="w-full justify-start text-[#EF4444] hover:text-[#EF4444] hover:bg-[#EF4444]/10"
-                      >
-                        <LogOut className="h-4 w-4 mr-2" /> Đăng xuất
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Link href="/login" className="block">
-                        <Button className="w-full bg-[#8B5CF6] hover:bg-[#7C3AED] text-white">
-                          Đăng nhập
-                        </Button>
-                      </Link>
-                      <Link href="/register" className="block">
-                        <Button
-                          variant="outline"
-                          className="w-full border-white/10 text-zinc-400 hover:text-white hover:bg-white/5"
-                        >
-                          Đăng ký
-                        </Button>
-                      </Link>
-                    </>
+                ))}
+                <Link
+                  href="/cart"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-4 rounded-xl text-base font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-3"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  Giỏ hàng
+                  {cartCount > 0 && (
+                    <span className="ml-auto px-2 py-0.5 rounded-full bg-[#8B5CF6] text-xs font-bold text-white">
+                      {cartCount}
+                    </span>
                   )}
-                </div>
+                </Link>
+              </nav>
+
+              {/* Mobile Auth */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5 space-y-3 bg-[#0B0B0F]/80 backdrop-blur-xl">
+                {user ? (
+                  <>
+                    <div className="px-3 pb-3 mb-2 text-sm text-zinc-500 border-b border-white/5 truncate flex items-center gap-2">
+                      <Sparkles className="w-3 h-3" />
+                      {user.email}
+                    </div>
+                    <Link href="/orders" className="block w-full" onClick={() => setMobileMenuOpen(false)}>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl"
+                      >
+                        <Package className="h-4 w-4 mr-2" /> Lịch sử đơn hàng
+                      </Button>
+                    </Link>
+                    <Button
+                      onClick={handleLogout}
+                      variant="ghost"
+                      className="w-full justify-start text-[#EF4444] hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-xl"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" /> Đăng xuất
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" className="block" onClick={() => setMobileMenuOpen(false)}>
+                      <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#6366F1] hover:from-[#A78BFA] hover:to-[#8B5CF6] text-white rounded-xl font-medium">
+                        Đăng nhập
+                      </Button>
+                    </Link>
+                    <Link href="/register" className="block" onClick={() => setMobileMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        className="w-full border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl"
+                      >
+                        Đăng ký
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </SheetContent>
           </Sheet>
         </div>
       </div>
+
+      {/* Bottom gradient glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#8B5CF6]/30 to-transparent opacity-50" />
     </header>
   );
 }

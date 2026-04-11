@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useEffect } from "react";
-import { Search, Filter, SortDesc } from "lucide-react";
+import { Search, Filter, SortDesc, Sparkles, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -34,11 +34,9 @@ export function GameFilters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Local state for search to allow fast typing before debouncing
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  // Function update URL params
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -47,18 +45,16 @@ export function GameFilters() {
       } else {
         params.delete(name);
       }
-      
-      // Reset page to 1 when filters change
+
       if (name !== "page") {
         params.delete("page");
       }
-      
+
       return params.toString();
     },
     [searchParams]
   );
 
-  // Lắng nghe debounced search term để update URL
   useEffect(() => {
     const currentSearch = searchParams.get("search") || "";
     if (debouncedSearchTerm !== currentSearch) {
@@ -66,38 +62,54 @@ export function GameFilters() {
     }
   }, [debouncedSearchTerm, pathname, router, createQueryString, searchParams]);
 
+  const clearSearch = () => {
+    setSearchTerm("");
+    router.push(`${pathname}?${createQueryString("search", "")}`);
+  };
+
   return (
-    <div className="flex flex-col md:flex-row gap-4 mb-8">
-      {/* Search Input */}
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A1A1AA]" />
-        <Input
-          type="text"
-          placeholder="Tìm tên game..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 h-11 bg-[#111118] border-white/10 text-white placeholder:text-[#A1A1AA]/70 focus:border-[#8B5CF6] focus:ring-[#8B5CF6]/20"
-        />
+    <div className="flex flex-col lg:flex-row gap-4 mb-10">
+      {/* Search Input with premium styling */}
+      <div className="relative flex-1 group">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#8B5CF6]/20 to-[#6366F1]/20 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 blur-xl" />
+        <div className="relative flex items-center">
+          <Search className="absolute left-4 h-4 w-4 text-zinc-500 transition-all duration-300 group-focus-within:scale-110 group-focus-within:text-[#8B5CF6]" />
+          <Input
+            type="text"
+            placeholder="Tìm tên game..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-11 pr-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-zinc-500 focus:border-[#8B5CF6] focus:ring-2 focus:ring-[#8B5CF6]/20 rounded-xl transition-all duration-300 hover:bg-white/[0.07] hover:border-white/20 shadow-sm"
+          />
+          {searchTerm && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 p-1 rounded-full hover:bg-white/10 text-zinc-500 hover:text-white transition-all"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Category Filter */}
-        <div className="flex-1 sm:w-48">
+        <div className="flex-1 sm:w-52">
           <Select
             value={searchParams.get("category") || "all"}
-            onValueChange={(value) => 
+            onValueChange={(value) =>
               router.push(`${pathname}?${createQueryString("category", value || "")}`)
             }
           >
-            <SelectTrigger className="w-full h-11 bg-[#111118] border-white/10 text-white focus:ring-[#8B5CF6]/20">
+            <SelectTrigger className="w-full h-12 bg-white/5 border-white/10 text-white focus:ring-[#8B5CF6]/20 rounded-xl transition-all duration-300">
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-[#A1A1AA]" />
+                <Filter className="h-4 w-4 text-[#8B5CF6]" />
                 <SelectValue placeholder="Danh mục" />
               </div>
             </SelectTrigger>
-            <SelectContent className="bg-[#111118] border-white/10 text-white">
+            <SelectContent className="bg-[#111118] border-white/10 text-white glass-premium">
               {categories.map((c) => (
-                <SelectItem key={c.id} value={c.id} className="focus:bg-white/10 focus:text-white cursor-pointer">
+                <SelectItem key={c.id} value={c.id} className="focus:bg-[#8B5CF6]/10 focus:text-white cursor-pointer rounded-lg">
                   {c.label}
                 </SelectItem>
               ))}
@@ -106,22 +118,22 @@ export function GameFilters() {
         </div>
 
         {/* Sort Filter */}
-        <div className="flex-1 sm:w-48">
+        <div className="flex-1 sm:w-52">
           <Select
             value={searchParams.get("sort") || "newest"}
-            onValueChange={(value) => 
+            onValueChange={(value) =>
               router.push(`${pathname}?${createQueryString("sort", value || "")}`)
             }
           >
-            <SelectTrigger className="w-full h-11 bg-[#111118] border-white/10 text-white focus:ring-[#8B5CF6]/20">
+            <SelectTrigger className="w-full h-12 bg-white/5 border-white/10 text-white focus:ring-[#8B5CF6]/20 rounded-xl transition-all duration-300">
               <div className="flex items-center gap-2">
-                <SortDesc className="h-4 w-4 text-[#A1A1AA]" />
+                <SortDesc className="h-4 w-4 text-[#8B5CF6]" />
                 <SelectValue placeholder="Sắp xếp" />
               </div>
             </SelectTrigger>
-            <SelectContent className="bg-[#111118] border-white/10 text-white">
+            <SelectContent className="bg-[#111118] border-white/10 text-white glass-premium">
               {sortOptions.map((s) => (
-                <SelectItem key={s.id} value={s.id} className="focus:bg-white/10 focus:text-white cursor-pointer">
+                <SelectItem key={s.id} value={s.id} className="focus:bg-[#8B5CF6]/10 focus:text-white cursor-pointer rounded-lg">
                   {s.label}
                 </SelectItem>
               ))}
