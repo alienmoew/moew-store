@@ -10,7 +10,7 @@ import {
   Menu,
   LogOut,
   Package,
-  Gamepad2,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +48,7 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
         <Link href="/" className="flex items-center gap-2 group">
           <div className="relative">
             <div className="absolute inset-0 bg-[#8B5CF6]/30 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-            <Gamepad2 className="relative h-8 w-8 text-[#A78BFA] transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 drop-shadow-[0_0_15px_rgba(167,139,250,0.6)]" />
+            <Crown className="relative h-8 w-8 text-[#A78BFA] transition-all duration-300 group-hover:scale-110 group-hover:-rotate-6 drop-shadow-[0_0_15px_rgba(167,139,250,0.6)] animate-pulse-slow" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-[#A78BFA] to-[#C4B5FD] bg-clip-text text-transparent group-hover:from-white group-hover:to-[#A78BFA] transition-all duration-300">
             Moew Store
@@ -203,7 +203,7 @@ export default function Navbar({ user, cartCount = 0 }: { user: any, cartCount?:
                 {/* Mobile Header */}
                 <div className="flex items-center justify-between p-4 border-b border-white/5">
                   <Link href="/" className="flex items-center gap-2">
-                    <Gamepad2 className="h-6 w-6 text-[#A78BFA]" />
+                    <Crown className="h-6 w-6 text-[#A78BFA]" />
                     <span className="text-lg font-bold bg-gradient-to-r from-[#A78BFA] to-[#C4B5FD] bg-clip-text text-transparent">
                       Moew Store
                     </span>
